@@ -15,6 +15,8 @@
 #include <validationinterface.h>
 #include <consensus/params.h>
 
+class BanMan;
+
 /** Default for -maxorphantx, maximum number of orphan transactions kept in memory */
 static const unsigned int DEFAULT_MAX_ORPHAN_TRANSACTIONS = 100;
 /** Default number of orphan+recently-replaced txn to keep around for block reconstruction */
@@ -34,9 +36,10 @@ static constexpr bool DEFAULT_ENABLE_BIP61 = true;
 class PeerLogicValidation final : public CValidationInterface, public NetEventsInterface {
 private:
     CConnman* const connman;
+    BanMan* const m_banman;
 
 public:
-    explicit PeerLogicValidation(CConnman* connman, CScheduler &scheduler, bool enable_bip61);
+    explicit PeerLogicValidation(CConnman* connman, BanMan* banman, CScheduler &scheduler, bool enable_bip61);
 
     /**
      * Overridden from CValidationInterface.
