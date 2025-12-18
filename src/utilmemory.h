@@ -6,14 +6,8 @@
 #ifndef BITCORE_UTILMEMORY_H
 #define BITCORE_UTILMEMORY_H
 
-#include <memory>
-#include <utility>
-
-//! Substitute for C++14 std::make_unique.
-template <typename T, typename... Args>
-std::unique_ptr<T> MakeUnique(Args&&... args)
-{
-    return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
-}
+// This file is deprecated and now simply includes util/memory.h
+// for backward compatibility with Bitcoin 0.15.x code
+#include <util/memory.h>
 
 #endif
