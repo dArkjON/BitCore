@@ -96,8 +96,11 @@ endif
 BITCOIN_CORE_H = \
   addrdb.h \
   addrman.h \
+  attributes.h \
+  banman.h \
   base58.h \
   bech32.h \
+  blockfilter.h \
   bloom.h \
   blockencodings.h \
   chain.h \
@@ -125,6 +128,7 @@ BITCOIN_CORE_H = \
   index/txindex.h \
   indirectmap.h \
   init.h \
+  interfaces/chain.h \
   interfaces/handler.h \
   interfaces/node.h \
   interfaces/wallet.h \
@@ -142,7 +146,9 @@ BITCOIN_CORE_H = \
   netaddress.h \
   netbase.h \
   netmessagemaker.h \
+  node/transaction.h \
   noui.h \
+  optional.h \
   outputtype.h \
   policy/feerate.h \
   policy/fees.h \
@@ -150,6 +156,7 @@ BITCOIN_CORE_H = \
   policy/rbf.h \
   pow.h \
   protocol.h \
+  psbt.h \
   random.h \
   reverse_iterator.h \
   reverselock.h \
@@ -184,18 +191,27 @@ BITCOIN_CORE_H = \
   ui_interface.h \
   undo.h \
   util.h \
+  util/bip32.h \
+  util/bytevectorhash.h \
+  util/memory.h \
+  util/moneystr.h \
+  util/strencodings.h \
+  util/system.h \
+  util/time.h \
   utilmemory.h \
   utilmoneystr.h \
   utiltime.h \
   validation.h \
   validationinterface.h \
   versionbits.h \
+  versionbitsinfo.h \
   walletinitinterface.h \
   wallet/coincontrol.h \
   wallet/crypter.h \
   wallet/db.h \
   wallet/feebumper.h \
   wallet/fees.h \
+  wallet/psbtwallet.h \
   wallet/rpcwallet.h \
   wallet/wallet.h \
   wallet/walletdb.h \
@@ -253,6 +269,8 @@ libbitcoin_server_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_server_a_SOURCES = \
   addrdb.cpp \
   addrman.cpp \
+  banman.cpp \
+  blockfilter.cpp \
   bloom.cpp \
   blockencodings.cpp \
   chain.cpp \
@@ -268,6 +286,7 @@ libbitcoin_server_a_SOURCES = \
   miner.cpp \
   net.cpp \
   net_processing.cpp \
+  node/transaction.cpp \
   noui.cpp \
   outputtype.cpp \
   policy/fees.cpp \
@@ -292,6 +311,7 @@ libbitcoin_server_a_SOURCES = \
   validation.cpp \
   validationinterface.cpp \
   versionbits.cpp \
+  versionbitsinfo.cpp \
   $(BITCOIN_CORE_H)
 
 # dash server
@@ -344,6 +364,7 @@ libbitcoin_wallet_a_SOURCES = \
   wallet/feebumper.cpp \
   wallet/fees.cpp \
   wallet/init.cpp \
+  wallet/psbtwallet.cpp \
   wallet/rpcdump.cpp \
   wallet/rpcwallet.cpp \
   wallet/wallet.cpp \
@@ -509,6 +530,7 @@ libbitcoin_common_a_SOURCES = \
   compressor.cpp \
   core_read.cpp \
   core_write.cpp \
+  interfaces/chain.cpp \
   key.cpp \
   key_io.cpp \
   keystore.cpp \
@@ -516,6 +538,7 @@ libbitcoin_common_a_SOURCES = \
   netbase.cpp \
   policy/feerate.cpp \
   protocol.cpp \
+  psbt.cpp \
   scheduler.cpp \
   script/descriptor.cpp \
   script/ismine.cpp \
@@ -546,6 +569,12 @@ libbitcoin_util_a_SOURCES = \
   sync.cpp \
   threadinterrupt.cpp \
   util.cpp \
+  util/bip32.cpp \
+  util/bytevectorhash.cpp \
+  util/moneystr.cpp \
+  util/strencodings.cpp \
+  util/system.cpp \
+  util/time.cpp \
   utilmoneystr.cpp \
   utilstrencodings.cpp \
   utiltime.cpp \
