@@ -294,11 +294,12 @@ am__crypto_libbitcoin_crypto_base_a_SOURCES_DIST = crypto/aes.cpp \
 	crypto/hmac_sha512.cpp crypto/hmac_sha512.h \
 	crypto/ripemd160.cpp crypto/ripemd160.h crypto/sha1.cpp \
 	crypto/sha1.h crypto/sha256.cpp crypto/sha256.h \
-	crypto/sha512.cpp crypto/sha512.h crypto/aes_helper.c \
-	crypto/blake.c crypto/bmw.c crypto/cubehash.c crypto/echo.c \
-	crypto/groestl.c crypto/gost_streebog.h crypto/hashblock.h \
-	crypto/jh.c crypto/keccak.c crypto/luffa.c crypto/lyra2.c \
-	crypto/lyra2.h crypto/lyra2z.c crypto/lyra2z.h crypto/nist5.h \
+	crypto/sha512.cpp crypto/sha512.h crypto/siphash.cpp \
+	crypto/siphash.h crypto/aes_helper.c crypto/blake.c \
+	crypto/bmw.c crypto/cubehash.c crypto/echo.c crypto/groestl.c \
+	crypto/gost_streebog.h crypto/hashblock.h crypto/jh.c \
+	crypto/keccak.c crypto/luffa.c crypto/lyra2.c crypto/lyra2.h \
+	crypto/lyra2z.c crypto/lyra2z.h crypto/nist5.h \
 	crypto/scrypt-sse2.cpp crypto/scrypt.cpp crypto/scrypt.h \
 	crypto/shavite.c crypto/simd.c crypto/skein.c \
 	crypto/sph_blake.h crypto/sph_bmw.h crypto/sph_cubehash.h \
@@ -322,6 +323,7 @@ am_crypto_libbitcoin_crypto_base_a_OBJECTS =  \
 	crypto/libbitcoin_crypto_base_a-sha1.$(OBJEXT) \
 	crypto/libbitcoin_crypto_base_a-sha256.$(OBJEXT) \
 	crypto/libbitcoin_crypto_base_a-sha512.$(OBJEXT) \
+	crypto/libbitcoin_crypto_base_a-siphash.$(OBJEXT) \
 	crypto/libbitcoin_crypto_base_a-aes_helper.$(OBJEXT) \
 	crypto/libbitcoin_crypto_base_a-blake.$(OBJEXT) \
 	crypto/libbitcoin_crypto_base_a-bmw.$(OBJEXT) \
@@ -981,11 +983,12 @@ am__libbitcoinconsensus_la_SOURCES_DIST = crypto/aes.cpp crypto/aes.h \
 	crypto/hmac_sha512.cpp crypto/hmac_sha512.h \
 	crypto/ripemd160.cpp crypto/ripemd160.h crypto/sha1.cpp \
 	crypto/sha1.h crypto/sha256.cpp crypto/sha256.h \
-	crypto/sha512.cpp crypto/sha512.h crypto/aes_helper.c \
-	crypto/blake.c crypto/bmw.c crypto/cubehash.c crypto/echo.c \
-	crypto/groestl.c crypto/gost_streebog.h crypto/hashblock.h \
-	crypto/jh.c crypto/keccak.c crypto/luffa.c crypto/lyra2.c \
-	crypto/lyra2.h crypto/lyra2z.c crypto/lyra2z.h crypto/nist5.h \
+	crypto/sha512.cpp crypto/sha512.h crypto/siphash.cpp \
+	crypto/siphash.h crypto/aes_helper.c crypto/blake.c \
+	crypto/bmw.c crypto/cubehash.c crypto/echo.c crypto/groestl.c \
+	crypto/gost_streebog.h crypto/hashblock.h crypto/jh.c \
+	crypto/keccak.c crypto/luffa.c crypto/lyra2.c crypto/lyra2.h \
+	crypto/lyra2z.c crypto/lyra2z.h crypto/nist5.h \
 	crypto/scrypt-sse2.cpp crypto/scrypt.cpp crypto/scrypt.h \
 	crypto/shavite.c crypto/simd.c crypto/skein.c \
 	crypto/sph_blake.h crypto/sph_bmw.h crypto/sph_cubehash.h \
@@ -1018,6 +1021,7 @@ am__objects_17 = crypto/libbitcoinconsensus_la-aes.lo \
 	crypto/libbitcoinconsensus_la-sha1.lo \
 	crypto/libbitcoinconsensus_la-sha256.lo \
 	crypto/libbitcoinconsensus_la-sha512.lo \
+	crypto/libbitcoinconsensus_la-siphash.lo \
 	crypto/libbitcoinconsensus_la-aes_helper.lo \
 	crypto/libbitcoinconsensus_la-blake.lo \
 	crypto/libbitcoinconsensus_la-bmw.lo \
@@ -1589,6 +1593,7 @@ am__depfiles_remade = ./$(DEPDIR)/bitcore_cli-bitcoin-cli.Po \
 	crypto/$(DEPDIR)/libbitcoin_crypto_base_a-sha512.Po \
 	crypto/$(DEPDIR)/libbitcoin_crypto_base_a-shavite.Po \
 	crypto/$(DEPDIR)/libbitcoin_crypto_base_a-simd.Po \
+	crypto/$(DEPDIR)/libbitcoin_crypto_base_a-siphash.Po \
 	crypto/$(DEPDIR)/libbitcoin_crypto_base_a-skein.Po \
 	crypto/$(DEPDIR)/libbitcoin_crypto_base_a-sph_fugue.Po \
 	crypto/$(DEPDIR)/libbitcoin_crypto_base_a-sph_hamsi.Po \
@@ -1626,6 +1631,7 @@ am__depfiles_remade = ./$(DEPDIR)/bitcore_cli-bitcoin-cli.Po \
 	crypto/$(DEPDIR)/libbitcoinconsensus_la-sha512.Plo \
 	crypto/$(DEPDIR)/libbitcoinconsensus_la-shavite.Plo \
 	crypto/$(DEPDIR)/libbitcoinconsensus_la-simd.Plo \
+	crypto/$(DEPDIR)/libbitcoinconsensus_la-siphash.Plo \
 	crypto/$(DEPDIR)/libbitcoinconsensus_la-skein.Plo \
 	crypto/$(DEPDIR)/libbitcoinconsensus_la-sph_fugue.Plo \
 	crypto/$(DEPDIR)/libbitcoinconsensus_la-sph_hamsi.Plo \
@@ -2710,11 +2716,12 @@ crypto_libbitcoin_crypto_base_a_SOURCES = crypto/aes.cpp crypto/aes.h \
 	crypto/hmac_sha512.cpp crypto/hmac_sha512.h \
 	crypto/ripemd160.cpp crypto/ripemd160.h crypto/sha1.cpp \
 	crypto/sha1.h crypto/sha256.cpp crypto/sha256.h \
-	crypto/sha512.cpp crypto/sha512.h crypto/aes_helper.c \
-	crypto/blake.c crypto/bmw.c crypto/cubehash.c crypto/echo.c \
-	crypto/groestl.c crypto/gost_streebog.h crypto/hashblock.h \
-	crypto/jh.c crypto/keccak.c crypto/luffa.c crypto/lyra2.c \
-	crypto/lyra2.h crypto/lyra2z.c crypto/lyra2z.h crypto/nist5.h \
+	crypto/sha512.cpp crypto/sha512.h crypto/siphash.cpp \
+	crypto/siphash.h crypto/aes_helper.c crypto/blake.c \
+	crypto/bmw.c crypto/cubehash.c crypto/echo.c crypto/groestl.c \
+	crypto/gost_streebog.h crypto/hashblock.h crypto/jh.c \
+	crypto/keccak.c crypto/luffa.c crypto/lyra2.c crypto/lyra2.h \
+	crypto/lyra2z.c crypto/lyra2z.h crypto/nist5.h \
 	crypto/scrypt-sse2.cpp crypto/scrypt.cpp crypto/scrypt.h \
 	crypto/shavite.c crypto/simd.c crypto/skein.c \
 	crypto/sph_blake.h crypto/sph_bmw.h crypto/sph_cubehash.h \
@@ -3734,6 +3741,8 @@ crypto/libbitcoin_crypto_base_a-sha256.$(OBJEXT):  \
 	crypto/$(am__dirstamp) crypto/$(DEPDIR)/$(am__dirstamp)
 crypto/libbitcoin_crypto_base_a-sha512.$(OBJEXT):  \
 	crypto/$(am__dirstamp) crypto/$(DEPDIR)/$(am__dirstamp)
+crypto/libbitcoin_crypto_base_a-siphash.$(OBJEXT):  \
+	crypto/$(am__dirstamp) crypto/$(DEPDIR)/$(am__dirstamp)
 crypto/libbitcoin_crypto_base_a-aes_helper.$(OBJEXT):  \
 	crypto/$(am__dirstamp) crypto/$(DEPDIR)/$(am__dirstamp)
 crypto/libbitcoin_crypto_base_a-blake.$(OBJEXT):  \
@@ -4454,6 +4463,8 @@ crypto/libbitcoinconsensus_la-sha256.lo: crypto/$(am__dirstamp) \
 	crypto/$(DEPDIR)/$(am__dirstamp)
 crypto/libbitcoinconsensus_la-sha512.lo: crypto/$(am__dirstamp) \
 	crypto/$(DEPDIR)/$(am__dirstamp)
+crypto/libbitcoinconsensus_la-siphash.lo: crypto/$(am__dirstamp) \
+	crypto/$(DEPDIR)/$(am__dirstamp)
 crypto/libbitcoinconsensus_la-aes_helper.lo: crypto/$(am__dirstamp) \
 	crypto/$(DEPDIR)/$(am__dirstamp)
 crypto/libbitcoinconsensus_la-blake.lo: crypto/$(am__dirstamp) \
@@ -5002,6 +5013,7 @@ include crypto/$(DEPDIR)/libbitcoin_crypto_base_a-sha256_sse4.Po # am--include-m
 include crypto/$(DEPDIR)/libbitcoin_crypto_base_a-sha512.Po # am--include-marker
 include crypto/$(DEPDIR)/libbitcoin_crypto_base_a-shavite.Po # am--include-marker
 include crypto/$(DEPDIR)/libbitcoin_crypto_base_a-simd.Po # am--include-marker
+include crypto/$(DEPDIR)/libbitcoin_crypto_base_a-siphash.Po # am--include-marker
 include crypto/$(DEPDIR)/libbitcoin_crypto_base_a-skein.Po # am--include-marker
 include crypto/$(DEPDIR)/libbitcoin_crypto_base_a-sph_fugue.Po # am--include-marker
 include crypto/$(DEPDIR)/libbitcoin_crypto_base_a-sph_hamsi.Po # am--include-marker
@@ -5039,6 +5051,7 @@ include crypto/$(DEPDIR)/libbitcoinconsensus_la-sha256_sse4.Plo # am--include-ma
 include crypto/$(DEPDIR)/libbitcoinconsensus_la-sha512.Plo # am--include-marker
 include crypto/$(DEPDIR)/libbitcoinconsensus_la-shavite.Plo # am--include-marker
 include crypto/$(DEPDIR)/libbitcoinconsensus_la-simd.Plo # am--include-marker
+include crypto/$(DEPDIR)/libbitcoinconsensus_la-siphash.Plo # am--include-marker
 include crypto/$(DEPDIR)/libbitcoinconsensus_la-skein.Plo # am--include-marker
 include crypto/$(DEPDIR)/libbitcoinconsensus_la-sph_fugue.Plo # am--include-marker
 include crypto/$(DEPDIR)/libbitcoinconsensus_la-sph_hamsi.Plo # am--include-marker
@@ -6032,6 +6045,20 @@ crypto/libbitcoin_crypto_base_a-sha512.obj: crypto/sha512.cpp
 #	$(AM_V_CXX)source='crypto/sha512.cpp' object='crypto/libbitcoin_crypto_base_a-sha512.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(crypto_libbitcoin_crypto_base_a_CPPFLAGS) $(CPPFLAGS) $(crypto_libbitcoin_crypto_base_a_CXXFLAGS) $(CXXFLAGS) -c -o crypto/libbitcoin_crypto_base_a-sha512.obj `if test -f 'crypto/sha512.cpp'; then $(CYGPATH_W) 'crypto/sha512.cpp'; else $(CYGPATH_W) '$(srcdir)/crypto/sha512.cpp'; fi`
+
+crypto/libbitcoin_crypto_base_a-siphash.o: crypto/siphash.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(crypto_libbitcoin_crypto_base_a_CPPFLAGS) $(CPPFLAGS) $(crypto_libbitcoin_crypto_base_a_CXXFLAGS) $(CXXFLAGS) -MT crypto/libbitcoin_crypto_base_a-siphash.o -MD -MP -MF crypto/$(DEPDIR)/libbitcoin_crypto_base_a-siphash.Tpo -c -o crypto/libbitcoin_crypto_base_a-siphash.o `test -f 'crypto/siphash.cpp' || echo '$(srcdir)/'`crypto/siphash.cpp
+	$(AM_V_at)$(am__mv) crypto/$(DEPDIR)/libbitcoin_crypto_base_a-siphash.Tpo crypto/$(DEPDIR)/libbitcoin_crypto_base_a-siphash.Po
+#	$(AM_V_CXX)source='crypto/siphash.cpp' object='crypto/libbitcoin_crypto_base_a-siphash.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(crypto_libbitcoin_crypto_base_a_CPPFLAGS) $(CPPFLAGS) $(crypto_libbitcoin_crypto_base_a_CXXFLAGS) $(CXXFLAGS) -c -o crypto/libbitcoin_crypto_base_a-siphash.o `test -f 'crypto/siphash.cpp' || echo '$(srcdir)/'`crypto/siphash.cpp
+
+crypto/libbitcoin_crypto_base_a-siphash.obj: crypto/siphash.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(crypto_libbitcoin_crypto_base_a_CPPFLAGS) $(CPPFLAGS) $(crypto_libbitcoin_crypto_base_a_CXXFLAGS) $(CXXFLAGS) -MT crypto/libbitcoin_crypto_base_a-siphash.obj -MD -MP -MF crypto/$(DEPDIR)/libbitcoin_crypto_base_a-siphash.Tpo -c -o crypto/libbitcoin_crypto_base_a-siphash.obj `if test -f 'crypto/siphash.cpp'; then $(CYGPATH_W) 'crypto/siphash.cpp'; else $(CYGPATH_W) '$(srcdir)/crypto/siphash.cpp'; fi`
+	$(AM_V_at)$(am__mv) crypto/$(DEPDIR)/libbitcoin_crypto_base_a-siphash.Tpo crypto/$(DEPDIR)/libbitcoin_crypto_base_a-siphash.Po
+#	$(AM_V_CXX)source='crypto/siphash.cpp' object='crypto/libbitcoin_crypto_base_a-siphash.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(crypto_libbitcoin_crypto_base_a_CPPFLAGS) $(CPPFLAGS) $(crypto_libbitcoin_crypto_base_a_CXXFLAGS) $(CXXFLAGS) -c -o crypto/libbitcoin_crypto_base_a-siphash.obj `if test -f 'crypto/siphash.cpp'; then $(CYGPATH_W) 'crypto/siphash.cpp'; else $(CYGPATH_W) '$(srcdir)/crypto/siphash.cpp'; fi`
 
 crypto/libbitcoin_crypto_base_a-scrypt-sse2.o: crypto/scrypt-sse2.cpp
 	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(crypto_libbitcoin_crypto_base_a_CPPFLAGS) $(CPPFLAGS) $(crypto_libbitcoin_crypto_base_a_CXXFLAGS) $(CXXFLAGS) -MT crypto/libbitcoin_crypto_base_a-scrypt-sse2.o -MD -MP -MF crypto/$(DEPDIR)/libbitcoin_crypto_base_a-scrypt-sse2.Tpo -c -o crypto/libbitcoin_crypto_base_a-scrypt-sse2.o `test -f 'crypto/scrypt-sse2.cpp' || echo '$(srcdir)/'`crypto/scrypt-sse2.cpp
@@ -10275,6 +10302,13 @@ crypto/libbitcoinconsensus_la-sha512.lo: crypto/sha512.cpp
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(AM_V_CXX_no)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbitcoinconsensus_la_CPPFLAGS) $(CPPFLAGS) $(libbitcoinconsensus_la_CXXFLAGS) $(CXXFLAGS) -c -o crypto/libbitcoinconsensus_la-sha512.lo `test -f 'crypto/sha512.cpp' || echo '$(srcdir)/'`crypto/sha512.cpp
 
+crypto/libbitcoinconsensus_la-siphash.lo: crypto/siphash.cpp
+	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbitcoinconsensus_la_CPPFLAGS) $(CPPFLAGS) $(libbitcoinconsensus_la_CXXFLAGS) $(CXXFLAGS) -MT crypto/libbitcoinconsensus_la-siphash.lo -MD -MP -MF crypto/$(DEPDIR)/libbitcoinconsensus_la-siphash.Tpo -c -o crypto/libbitcoinconsensus_la-siphash.lo `test -f 'crypto/siphash.cpp' || echo '$(srcdir)/'`crypto/siphash.cpp
+	$(AM_V_at)$(am__mv) crypto/$(DEPDIR)/libbitcoinconsensus_la-siphash.Tpo crypto/$(DEPDIR)/libbitcoinconsensus_la-siphash.Plo
+#	$(AM_V_CXX)source='crypto/siphash.cpp' object='crypto/libbitcoinconsensus_la-siphash.lo' libtool=yes \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbitcoinconsensus_la_CPPFLAGS) $(CPPFLAGS) $(libbitcoinconsensus_la_CXXFLAGS) $(CXXFLAGS) -c -o crypto/libbitcoinconsensus_la-siphash.lo `test -f 'crypto/siphash.cpp' || echo '$(srcdir)/'`crypto/siphash.cpp
+
 crypto/libbitcoinconsensus_la-scrypt-sse2.lo: crypto/scrypt-sse2.cpp
 	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbitcoinconsensus_la_CPPFLAGS) $(CPPFLAGS) $(libbitcoinconsensus_la_CXXFLAGS) $(CXXFLAGS) -MT crypto/libbitcoinconsensus_la-scrypt-sse2.lo -MD -MP -MF crypto/$(DEPDIR)/libbitcoinconsensus_la-scrypt-sse2.Tpo -c -o crypto/libbitcoinconsensus_la-scrypt-sse2.lo `test -f 'crypto/scrypt-sse2.cpp' || echo '$(srcdir)/'`crypto/scrypt-sse2.cpp
 	$(AM_V_at)$(am__mv) crypto/$(DEPDIR)/libbitcoinconsensus_la-scrypt-sse2.Tpo crypto/$(DEPDIR)/libbitcoinconsensus_la-scrypt-sse2.Plo
@@ -12607,6 +12641,7 @@ distclean: distclean-recursive
 	-rm -f crypto/$(DEPDIR)/libbitcoin_crypto_base_a-sha512.Po
 	-rm -f crypto/$(DEPDIR)/libbitcoin_crypto_base_a-shavite.Po
 	-rm -f crypto/$(DEPDIR)/libbitcoin_crypto_base_a-simd.Po
+	-rm -f crypto/$(DEPDIR)/libbitcoin_crypto_base_a-siphash.Po
 	-rm -f crypto/$(DEPDIR)/libbitcoin_crypto_base_a-skein.Po
 	-rm -f crypto/$(DEPDIR)/libbitcoin_crypto_base_a-sph_fugue.Po
 	-rm -f crypto/$(DEPDIR)/libbitcoin_crypto_base_a-sph_hamsi.Po
@@ -12644,6 +12679,7 @@ distclean: distclean-recursive
 	-rm -f crypto/$(DEPDIR)/libbitcoinconsensus_la-sha512.Plo
 	-rm -f crypto/$(DEPDIR)/libbitcoinconsensus_la-shavite.Plo
 	-rm -f crypto/$(DEPDIR)/libbitcoinconsensus_la-simd.Plo
+	-rm -f crypto/$(DEPDIR)/libbitcoinconsensus_la-siphash.Plo
 	-rm -f crypto/$(DEPDIR)/libbitcoinconsensus_la-skein.Plo
 	-rm -f crypto/$(DEPDIR)/libbitcoinconsensus_la-sph_fugue.Plo
 	-rm -f crypto/$(DEPDIR)/libbitcoinconsensus_la-sph_hamsi.Plo
@@ -13144,6 +13180,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f crypto/$(DEPDIR)/libbitcoin_crypto_base_a-sha512.Po
 	-rm -f crypto/$(DEPDIR)/libbitcoin_crypto_base_a-shavite.Po
 	-rm -f crypto/$(DEPDIR)/libbitcoin_crypto_base_a-simd.Po
+	-rm -f crypto/$(DEPDIR)/libbitcoin_crypto_base_a-siphash.Po
 	-rm -f crypto/$(DEPDIR)/libbitcoin_crypto_base_a-skein.Po
 	-rm -f crypto/$(DEPDIR)/libbitcoin_crypto_base_a-sph_fugue.Po
 	-rm -f crypto/$(DEPDIR)/libbitcoin_crypto_base_a-sph_hamsi.Po
@@ -13181,6 +13218,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f crypto/$(DEPDIR)/libbitcoinconsensus_la-sha512.Plo
 	-rm -f crypto/$(DEPDIR)/libbitcoinconsensus_la-shavite.Plo
 	-rm -f crypto/$(DEPDIR)/libbitcoinconsensus_la-simd.Plo
+	-rm -f crypto/$(DEPDIR)/libbitcoinconsensus_la-siphash.Plo
 	-rm -f crypto/$(DEPDIR)/libbitcoinconsensus_la-skein.Plo
 	-rm -f crypto/$(DEPDIR)/libbitcoinconsensus_la-sph_fugue.Plo
 	-rm -f crypto/$(DEPDIR)/libbitcoinconsensus_la-sph_hamsi.Plo
