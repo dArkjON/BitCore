@@ -20,6 +20,8 @@
 
 #include <boost/signals2/signal.hpp>
 
+using namespace boost::placeholders;
+
 struct MainSignalsInstance {
     // Dash
     boost::signals2::signal<void (const CBlockIndex *)> AcceptedBlockHeader;

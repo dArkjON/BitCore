@@ -25,7 +25,7 @@ bool CMasternodeConfig::read(std::string& strErr) {
     boost::filesystem::ifstream streamConfig(pathMasternodeConfigFile);
     //Bitcore Begin
     //We add a bitcore.conf by default
-    boost::filesystem::path pathConfigFile = GetConfigFile(gArgs.GetArg(MASTERNODE_CONF_FILENAME_ARG, BITCOIN_CONF_FILENAME));
+    boost::filesystem::path pathConfigFile = GetConfigFile(gArgs.GetArg(MASTERNODE_CONF_FILENAME_ARG, BITCORE_CONF_FILENAME));
     boost::filesystem::ifstream streamConfig2(pathConfigFile);
 
     if (!streamConfig2.good()) {

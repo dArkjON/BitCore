@@ -556,7 +556,7 @@ void CConnman::DumpBanlist()
 
     int64_t nStart = GetTimeMillis();
 
-    CBanDB bandb;
+    CBanDB bandb(GetDataDir() / "banlist.dat");
     banmap_t banmap;
     GetBanned(banmap);
     if (bandb.Write(banmap)) {
@@ -2512,7 +2512,7 @@ bool CConnman::Start(CScheduler& scheduler, const Options& connOptions)
         clientInterface->InitMessage(_("Loading banlist..."));
     // Load addresses from banlist.dat
     nStart = GetTimeMillis();
-    CBanDB bandb;
+    CBanDB bandb(GetDataDir() / "banlist.dat");
     banmap_t banmap;
     if (bandb.Read(banmap)) {
         SetBanned(banmap); // thread save setter

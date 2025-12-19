@@ -100,7 +100,6 @@ BITCOIN_CORE_H = \
   banman.h \
   base58.h \
   bech32.h \
-  blockfilter.h \
   bloom.h \
   blockencodings.h \
   chain.h \
@@ -128,10 +127,6 @@ BITCOIN_CORE_H = \
   index/txindex.h \
   indirectmap.h \
   init.h \
-  interfaces/chain.h \
-  interfaces/handler.h \
-  interfaces/node.h \
-  interfaces/wallet.h \
   key.h \
   key_io.h \
   keystore.h \
@@ -156,7 +151,6 @@ BITCOIN_CORE_H = \
   policy/rbf.h \
   pow.h \
   protocol.h \
-  psbt.h \
   random.h \
   reverse_iterator.h \
   reverselock.h \
@@ -270,7 +264,6 @@ libbitcoin_server_a_SOURCES = \
   addrdb.cpp \
   addrman.cpp \
   banman.cpp \
-  blockfilter.cpp \
   bloom.cpp \
   blockencodings.cpp \
   chain.cpp \
@@ -357,14 +350,12 @@ endif
 libbitcoin_wallet_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_wallet_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_wallet_a_SOURCES = \
-  interfaces/wallet.cpp \
   wallet/coincontrol.cpp \
   wallet/crypter.cpp \
   wallet/db.cpp \
   wallet/feebumper.cpp \
   wallet/fees.cpp \
   wallet/init.cpp \
-  wallet/psbtwallet.cpp \
   wallet/rpcdump.cpp \
   wallet/rpcwallet.cpp \
   wallet/wallet.cpp \
@@ -496,7 +487,6 @@ libbitcoin_consensus_a_SOURCES = \
   consensus/merkle.h \
   consensus/params.h \
   consensus/validation.h \
-  hash.cpp \
   hash.h \
   prevector.h \
   primitives/block.cpp \
@@ -532,7 +522,6 @@ libbitcoin_common_a_SOURCES = \
   compressor.cpp \
   core_read.cpp \
   core_write.cpp \
-  interfaces/chain.cpp \
   key.cpp \
   key_io.cpp \
   keystore.cpp \
@@ -540,7 +529,6 @@ libbitcoin_common_a_SOURCES = \
   netbase.cpp \
   policy/feerate.cpp \
   protocol.cpp \
-  psbt.cpp \
   scheduler.cpp \
   script/descriptor.cpp \
   script/ismine.cpp \
@@ -562,15 +550,12 @@ libbitcoin_util_a_SOURCES = \
   compat/glibcxx_sanity.cpp \
   compat/strnlen.cpp \
   fs.cpp \
-  interfaces/handler.cpp \
-  interfaces/node.cpp \
   logging.cpp \
   random.cpp \
   rpc/protocol.cpp \
   support/cleanse.cpp \
   sync.cpp \
   threadinterrupt.cpp \
-  util.cpp \
   util/bip32.cpp \
   util/bytevectorhash.cpp \
   util/moneystr.cpp \

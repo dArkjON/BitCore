@@ -17,23 +17,27 @@
 #include <key_io.h>
 #include <merkleblock.h>
 #include <net.h>
+#include <node/transaction.h>
 #include <policy/policy.h>
 #include <policy/rbf.h>
 #include <primitives/transaction.h>
 #include <rpc/rawtransaction.h>
 #include <rpc/server.h>
+#include <rpc/util.h>
 #include <script/script.h>
 #include <script/script_error.h>
 #include <script/sign.h>
 #include <script/standard.h>
 #include <txmempool.h>
 #include <uint256.h>
-#include <utilstrencodings.h>
+#include <util/strencodings.h>
 #ifdef ENABLE_WALLET
 #include <wallet/rpcwallet.h>
 #endif
 
+#include <algorithm>
 #include <future>
+#include <numeric>
 #include <stdint.h>
 
 #include <univalue.h>
@@ -1814,6 +1818,7 @@ UniValue converttopsbt(const JSONRPCRequest& request)
     return EncodeBase64((unsigned char*)ssTx.data(), ssTx.size());
 }
 
+#if 0 // TODO: These PSBT functions need full PSBT structure update from Bitcoin 0.18
 UniValue utxoupdatepsbt(const JSONRPCRequest& request)
 {
     if (request.fHelp || request.params.size() != 1) {
@@ -2167,6 +2172,7 @@ UniValue analyzepsbt(const JSONRPCRequest& request)
     }
     return result;
 }
+#endif // Disabled PSBT functions
 
 static const CRPCCommand commands[] =
 { //  category              name                            actor (function)            argNames
@@ -2185,9 +2191,9 @@ static const CRPCCommand commands[] =
     { "rawtransactions",    "finalizepsbt",                 &finalizepsbt,              {"psbt", "extract"} },
     { "rawtransactions",    "createpsbt",                   &createpsbt,                {"inputs","outputs","locktime","replaceable"} },
     { "rawtransactions",    "converttopsbt",                &converttopsbt,             {"hexstring","permitsigdata","iswitness"} },
-    { "rawtransactions",    "utxoupdatepsbt",               &utxoupdatepsbt,            {"psbt"} },
-    { "rawtransactions",    "joinpsbts",                    &joinpsbts,                 {"txs"} },
-    { "rawtransactions",    "analyzepsbt",                  &analyzepsbt,               {"psbt"} },
+//  { "rawtransactions",    "utxoupdatepsbt",               &utxoupdatepsbt,            {"psbt"} },  // Disabled - needs PSBT update
+//  { "rawtransactions",    "joinpsbts",                    &joinpsbts,                 {"txs"} },    // Disabled - needs PSBT update
+//  { "rawtransactions",    "analyzepsbt",                  &analyzepsbt,               {"psbt"} },   // Disabled - needs PSBT update
 
     { "blockchain",         "gettxoutproof",                &gettxoutproof,             {"txids", "blockhash"} },
     { "blockchain",         "verifytxoutproof",             &verifytxoutproof,          {"proof"} },

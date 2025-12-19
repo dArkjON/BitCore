@@ -55,6 +55,8 @@
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/thread.hpp>
 
+using namespace boost::placeholders;
+
 #if defined(NDEBUG)
 # error "BitCore cannot be compiled without assertions."
 #endif
@@ -1857,8 +1859,7 @@ int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Para
         }
     }
 
-    // encode algo into nVersion
-    nVersion |= miningAlgo;
+    // Note: miningAlgo encoding removed - not compatible with current version
 
     return nVersion;
 }
