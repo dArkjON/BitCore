@@ -29,6 +29,8 @@
 #include <QSet>
 #include <QTimer>
 
+using namespace boost::placeholders;
+
 
 WalletModel::WalletModel(std::unique_ptr<interfaces::Wallet> wallet, interfaces::Node& node, const PlatformStyle *platformStyle, OptionsModel *_optionsModel, QObject *parent) :
     QObject(parent), m_wallet(std::move(wallet)), m_node(node), optionsModel(_optionsModel), addressTableModel(0),
@@ -206,8 +208,8 @@ WalletModel::SendCoinsReturn WalletModel::prepareTransaction(WalletModelTransact
 
         // Dash
         // FXTC TODO: check
-        //newTx = m_wallet->createTransaction(vecSend, coinControl, true /* sign */, nChangePosRet, nFeeRequired, strFailReason);
-        newTx = m_wallet->createTransaction(vecSend, coinControl, true /* sign */, nChangePosRet, nFeeRequired, strFailReason, recipients[0].inputType, recipients[0].fUseInstantSend);
+        // Bitcoin 0.18: createTransaction no longer accepts inputType and fUseInstantSend parameters
+        newTx = m_wallet->createTransaction(vecSend, coinControl, true /* sign */, nChangePosRet, nFeeRequired, strFailReason);
         //
 
         transaction.setTransactionFee(nFeeRequired);
@@ -261,7 +263,8 @@ WalletModel::SendCoinsReturn WalletModel::sendCoins(WalletModelTransaction &tran
 
         auto& newTx = transaction.getWtx();
         std::string rejectReason;
-        if (!newTx->commit({} /* mapValue */, std::move(vOrderForm), {} /* fromAccount */, rejectReason))
+        // Bitcoin 0.18: commit no longer accepts fromAccount parameter
+        if (!newTx->commit({} /* mapValue */, std::move(vOrderForm), rejectReason))
             return SendCoinsReturn(TransactionCommitFailed, QString::fromStdString(rejectReason));
 
         CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
@@ -327,18 +330,15 @@ WalletModel::EncryptionStatus WalletModel::getEncryptionStatus() const
     {
         return Unencrypted;
     }
-    else if(m_wallet->isLocked(true))
-    {
-        return Locked;
-    }
     else if(m_wallet->isLocked())
     {
-        return UnlockedForMixingOnly;
+        return Locked;
     }
     else
     {
         return Unlocked;
     }
+    // Note: UnlockedForMixingOnly status removed in Bitcoin 0.18 (no PrivateSend)
 }
 
 bool WalletModel::setWalletEncrypted(bool encrypted, const SecureString &passphrase)
@@ -357,15 +357,16 @@ bool WalletModel::setWalletEncrypted(bool encrypted, const SecureString &passphr
 
 bool WalletModel::setWalletLocked(bool locked, const SecureString &passPhrase, bool fMixing)
 {
+    Q_UNUSED(fMixing); // Mixing parameter no longer supported in Bitcoin 0.18
     if(locked)
     {
         // Lock
-        return m_wallet->lock(fMixing);
+        return m_wallet->lock();
     }
     else
     {
         // Unlock
-        return m_wallet->unlock(passPhrase, fMixing);
+        return m_wallet->unlock(passPhrase);
     }
 }
 

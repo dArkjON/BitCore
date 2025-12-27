@@ -47,6 +47,7 @@ extern const char * const MASTERNODE_CONF_FILENAME_ARG;
 extern bool fMasterNode;
 extern bool fLiteMode;
 extern int nWalletBackups;
+extern int32_t miningAlgo;
 
 /** Translate a message to the native language of the user. */
 const extern std::function<std::string(const char*)> G_TRANSLATION_FUN;

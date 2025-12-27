@@ -1859,7 +1859,8 @@ int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Para
         }
     }
 
-    // Note: miningAlgo encoding removed - not compatible with current version
+    // Bitcore: Add mining algorithm to block version
+    nVersion |= miningAlgo;
 
     return nVersion;
 }

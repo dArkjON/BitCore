@@ -65,7 +65,8 @@
 #include <QFontDatabase>
 #endif
 
-static fs::detail::utf8_codecvt_facet utf8;
+// utf8_codecvt_facet removed in newer Boost versions - no longer needed
+// static fs::detail::utf8_codecvt_facet utf8;
 
 #if defined(Q_OS_MAC)
 #pragma GCC diagnostic push
@@ -399,7 +400,7 @@ void openDebugLogfile()
 
 bool openBitcoinConf()
 {
-    boost::filesystem::path pathConfig = GetConfigFile(gArgs.GetArg("-conf", BITCOIN_CONF_FILENAME));
+    boost::filesystem::path pathConfig = GetConfigFile(gArgs.GetArg("-conf", BITCORE_CONF_FILENAME));
 
     /* Create the file */
     boost::filesystem::ofstream configFile(pathConfig, std::ios_base::app);
@@ -460,7 +461,7 @@ void openMNConfigfile()
 //BTX BEGIN
 void openBTXConfigfile()
 {
-    boost::filesystem::path pathConfig2 = GetConfigFile(BITCOIN_CONF_FILENAME);
+    boost::filesystem::path pathConfig2 = GetConfigFile(BITCORE_CONF_FILENAME);
 
     /* Create the file */
     boost::filesystem::ofstream configFile(pathConfig2, std::ios_base::app);
@@ -899,12 +900,12 @@ void setClipboard(const QString& str)
 
 fs::path qstringToBoostPath(const QString &path)
 {
-    return fs::path(path.toStdString(), utf8);
+    return fs::path(path.toStdString());
 }
 
 QString boostPathToQString(const fs::path &path)
 {
-    return QString::fromStdString(path.string(utf8));
+    return QString::fromStdString(path.string());
 }
 
 QString formatDurationStr(int secs)
@@ -1028,7 +1029,7 @@ qreal calculateIdealFontSize(int width, const QString& text, QFont font, qreal m
     while(font_size >= minPointSize) {
         font.setPointSizeF(font_size);
         QFontMetrics fm(font);
-        if (fm.width(text) < width) {
+        if (fm.horizontalAdvance(text) < width) {
             break;
         }
         font_size -= 0.5;

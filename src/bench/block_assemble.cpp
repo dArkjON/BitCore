@@ -13,6 +13,7 @@
 #include <scheduler.h>
 #include <txdb.h>
 #include <txmempool.h>
+#include <array>
 #include <utiltime.h>
 #include <validation.h>
 #include <validationinterface.h>

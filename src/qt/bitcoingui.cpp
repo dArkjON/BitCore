@@ -44,6 +44,8 @@
 
 #include <iostream>
 
+using namespace boost::placeholders;
+
 #include <QAction>
 #include <QApplication>
 #include <QComboBox>
@@ -1614,7 +1616,7 @@ UnitDisplayStatusBarControl::UnitDisplayStatusBarControl(const PlatformStyle *pl
     const QFontMetrics fm(font());
     for (const BitcoinUnits::Unit unit : units)
     {
-        max_width = qMax(max_width, fm.width(BitcoinUnits::longName(unit)));
+        max_width = qMax(max_width, fm.horizontalAdvance(BitcoinUnits::longName(unit)));
     }
     setMinimumSize(max_width, 0);
     setAlignment(Qt::AlignRight | Qt::AlignVCenter);

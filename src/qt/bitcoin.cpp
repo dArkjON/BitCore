@@ -523,7 +523,7 @@ int main(int argc, char *argv[])
     // Now that QSettings are accessible, initialize translations
     QTranslator qtTranslatorBase, qtTranslator, translatorBase, translator;
     initTranslations(qtTranslatorBase, qtTranslator, translatorBase, translator);
-    translationInterface.Translate.connect(Translate);
+    // translationInterface removed in Bitcoin 0.18 - Qt handles translations directly
 
     // Show help message immediately after parsing command-line options (for "-lang") and setting locale,
     // but before showing splash screen.

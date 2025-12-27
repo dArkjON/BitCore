@@ -36,6 +36,8 @@
 #include <QDebug>
 #include <QTimer>
 
+using namespace boost::placeholders;
+
 static int64_t nLastHeaderTipUpdateNotification = 0;
 static int64_t nLastBlockTipUpdateNotification = 0;
 
@@ -304,7 +306,8 @@ void ClientModel::subscribeToCoreSignals()
     m_handler_notify_block_tip = m_node.handleNotifyBlockTip(boost::bind(BlockTipChanged, this, _1, _2, _3, _4, false));
     m_handler_notify_header_tip = m_node.handleNotifyHeaderTip(boost::bind(BlockTipChanged, this, _1, _2, _3, _4, true));
     // Dash
-    m_handler_notify_additional_data_sync_progress_changed = m_node.handleNotifyAdditionalDataSyncProgressChanged(boost::bind(NotifyAdditionalDataSyncProgressChanged, this, _1));
+    // Disabled: handleNotifyAdditionalDataSyncProgressChanged not available in Bitcoin 0.18 interface
+    // m_handler_notify_additional_data_sync_progress_changed = m_node.handleNotifyAdditionalDataSyncProgressChanged(boost::bind(NotifyAdditionalDataSyncProgressChanged, this, _1));
     //
 }
 

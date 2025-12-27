@@ -53,11 +53,11 @@ QString TransactionDesc::FormatTxStatus(const interfaces::WalletTx& wtx, const i
 QString TransactionDesc::toHTML(interfaces::Node& node, interfaces::Wallet& wallet, TransactionRecord *rec, int unit)
 {
     int numBlocks;
-    int64_t adjustedTime;
     interfaces::WalletTxStatus status;
     interfaces::WalletOrderForm orderForm;
     bool inMempool;
-    interfaces::WalletTx wtx = wallet.getWalletTxDetails(rec->hash, status, orderForm, inMempool, numBlocks, adjustedTime);
+    interfaces::WalletTx wtx = wallet.getWalletTxDetails(rec->hash, status, orderForm, inMempool, numBlocks);
+    int64_t adjustedTime = GetAdjustedTime();
 
     QString strHTML;
 

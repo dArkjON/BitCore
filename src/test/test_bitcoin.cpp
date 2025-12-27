@@ -4,6 +4,7 @@
 
 #include <test/test_bitcoin.h>
 
+#include <banman.h>
 #include <chainparams.h>
 #include <consensus/consensus.h>
 #include <consensus/validation.h>
@@ -107,7 +108,8 @@ TestingSetup::TestingSetup(const std::string& chainName) : BasicTestingSetup(cha
             threadGroup.create_thread(&ThreadScriptCheck);
         g_connman = std::unique_ptr<CConnman>(new CConnman(0x1337, 0x1337)); // Deterministic randomness for tests.
         connman = g_connman.get();
-        peerLogic.reset(new PeerLogicValidation(connman, scheduler, /*enable_bip61=*/true));
+        m_banman = MakeUnique<BanMan>(GetDataDir() / "banlist.dat", nullptr, DEFAULT_MISBEHAVING_BANTIME);
+        peerLogic.reset(new PeerLogicValidation(connman, m_banman.get(), scheduler, /*enable_bip61=*/true));
 }
 
 TestingSetup::~TestingSetup()

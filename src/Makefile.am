@@ -305,6 +305,8 @@ libbitcoin_server_a_SOURCES = \
   validationinterface.cpp \
   versionbits.cpp \
   versionbitsinfo.cpp \
+  interfaces/handler.cpp \
+  interfaces/node.cpp \
   $(BITCOIN_CORE_H)
 
 # dash server
@@ -362,6 +364,7 @@ libbitcoin_wallet_a_SOURCES = \
   wallet/walletdb.cpp \
   wallet/walletutil.cpp \
   wallet/coinselection.cpp \
+  interfaces/wallet.cpp \
   $(BITCOIN_CORE_H)
 
 # dash wallet
@@ -522,6 +525,7 @@ libbitcoin_common_a_SOURCES = \
   compressor.cpp \
   core_read.cpp \
   core_write.cpp \
+  hash.cpp \
   key.cpp \
   key_io.cpp \
   keystore.cpp \
@@ -564,7 +568,6 @@ libbitcoin_util_a_SOURCES = \
   util/time.cpp \
   utilmoneystr.cpp \
   utilstrencodings.cpp \
-  utiltime.cpp \
   $(BITCOIN_CORE_H)
 
 if GLIBC_BACK_COMPAT

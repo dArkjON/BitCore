@@ -172,14 +172,12 @@ public:
         // This is fine at runtime as we'll fall back to using them as a oneshot if they don't support the
         // service bits we want, but we should get them updated to support all service bits wanted by any
         // release ASAP to avoid it where possible.
-        // BTX
-        vSeeds.emplace_back("seed.bitcore.biz");
-        vSeeds.emplace_back("37.120.190.76");
-        vSeeds.emplace_back("37.120.186.85");
-        vSeeds.emplace_back("185.194.140.60");
-        vSeeds.emplace_back("188.71.223.206");
-        vSeeds.emplace_back("185.194.142.122");
-        //vSeeds.emplace_back("185.194.142.122", false);
+        // BTX - Bitcore Production Nodes (Updated 2025-12-20)
+        vSeeds.emplace_back("83.221.211.116");
+        vSeeds.emplace_back("51.15.77.33");
+        vSeeds.emplace_back("185.228.139.10");
+        vSeeds.emplace_back("5.188.104.245");
+        vSeeds.emplace_back("149.28.34.40");
 
         // BTX prefix '2'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,3);
@@ -329,17 +327,9 @@ public:
         assert(consensus.hashGenesisBlock == uint256S("0x02c5d66e8edb49984eb743c798bca069466ce457b7febfa3c3a01b33353b7bc6"));
         assert(genesis.hashMerkleRoot == uint256S("0x0ac58b2cf882f0d25b640d4b22411a22246962aff702064255b2611f48e300ff"));
 
-        /*
-        // BTX
+        // BTX - No Testnet (cleared 2025-12-20)
         vFixedSeeds.clear();
         vSeeds.clear();
-        */
-        vSeeds.emplace_back("188.68.52.172");
-        vSeeds.emplace_back("37.120.186.85");
-        vSeeds.emplace_back("37.120.186.85");
-        vSeeds.emplace_back("188.71.223.206");
-        vSeeds.emplace_back("185.194.142.122");
-        vSeeds.emplace_back("51.15.84.165");
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,111);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,196);

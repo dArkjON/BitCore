@@ -63,10 +63,12 @@ struct CConnmanTest {
 };
 
 class PeerLogicValidation;
+class BanMan;
 struct TestingSetup: public BasicTestingSetup {
     boost::thread_group threadGroup;
     CConnman* connman;
     CScheduler scheduler;
+    std::unique_ptr<BanMan> m_banman;
     std::unique_ptr<PeerLogicValidation> peerLogic;
 
     explicit TestingSetup(const std::string& chainName = CBaseChainParams::MAIN);
