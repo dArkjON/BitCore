@@ -379,14 +379,21 @@ static void registerSignalHandler(int signal, void(*handler)(int))
 }
 #endif
 
+// Boost >= 1.74 changed boost::function's internal storage for plain function
+// pointers, which breaks signals2's disconnect-by-value (it needs to compare
+// the stored slot against a freshly built one). Store the connection handle
+// from connect() instead and disconnect through that, avoiding the comparison
+// entirely.
+static boost::signals2::connection g_rpc_notify_block_change_connection;
+
 static void OnRPCStarted()
 {
-    uiInterface.NotifyBlockTip.connect(&RPCNotifyBlockChange);
+    g_rpc_notify_block_change_connection = uiInterface.NotifyBlockTip.connect(&RPCNotifyBlockChange);
 }
 
 static void OnRPCStopped()
 {
-    uiInterface.NotifyBlockTip.disconnect(&RPCNotifyBlockChange);
+    g_rpc_notify_block_change_connection.disconnect();
     RPCNotifyBlockChange(false, nullptr);
     g_best_block_cv.notify_all();
     LogPrint(BCLog::RPC, "RPC stopped.\n");
@@ -1749,8 +1756,11 @@ bool AppInitMain()
 
     // Either install a handler to notify us when genesis activates, or set fHaveGenesis directly.
     // No locking, as this happens before any background thread is started.
+    // See the comment on g_rpc_notify_block_change_connection above for why this
+    // connects via a stored connection handle rather than disconnect-by-value.
+    boost::signals2::connection genesis_wait_connection;
     if (chainActive.Tip() == nullptr) {
-        uiInterface.NotifyBlockTip.connect(BlockNotifyGenesisWait);
+        genesis_wait_connection = uiInterface.NotifyBlockTip.connect(BlockNotifyGenesisWait);
     } else {
         fHaveGenesis = true;
     }
@@ -1774,7 +1784,7 @@ bool AppInitMain()
         while (!fHaveGenesis && !ShutdownRequested()) {
             condvar_GenesisWait.wait_for(lock, std::chrono::milliseconds(500));
         }
-        uiInterface.NotifyBlockTip.disconnect(BlockNotifyGenesisWait);
+        genesis_wait_connection.disconnect();
     }
 
     if (ShutdownRequested()) {

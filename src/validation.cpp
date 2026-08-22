@@ -54,6 +54,10 @@
 
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/thread.hpp>
+// Boost >= 1.73 no longer injects _1/_2/... into the global namespace by
+// default; pull in the namespaced placeholders explicitly instead.
+#include <boost/bind/placeholders.hpp>
+using namespace boost::placeholders;
 
 #if defined(NDEBUG)
 # error "BitCore cannot be compiled without assertions."
@@ -2592,14 +2596,19 @@ class ConnectTrace {
 private:
     std::vector<PerBlockConnectTrace> blocksConnected;
     CTxMemPool &pool;
+    // Store the connection handle rather than disconnecting by value: Boost's
+    // disconnect-by-value needs to compare the stored slot against a freshly
+    // built boost::bind(...), which is no longer reliable with newer Boost
+    // versions' internal boost::function storage for such comparisons.
+    boost::signals2::connection m_connNotifyEntryRemoved;
 
 public:
     explicit ConnectTrace(CTxMemPool &_pool) : blocksConnected(1), pool(_pool) {
-        pool.NotifyEntryRemoved.connect(boost::bind(&ConnectTrace::NotifyEntryRemoved, this, _1, _2));
+        m_connNotifyEntryRemoved = pool.NotifyEntryRemoved.connect(boost::bind(&ConnectTrace::NotifyEntryRemoved, this, _1, _2));
     }
 
     ~ConnectTrace() {
-        pool.NotifyEntryRemoved.disconnect(boost::bind(&ConnectTrace::NotifyEntryRemoved, this, _1, _2));
+        m_connNotifyEntryRemoved.disconnect();
     }
 
     void BlockConnected(CBlockIndex* pindex, std::shared_ptr<const CBlock> pblock) {
