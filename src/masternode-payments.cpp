@@ -616,7 +616,7 @@ bool CMasternodePaymentVote::IsValid(CNode* pnode, int nValidationHeight, std::s
 
     int nRank;
 
-    if(!mnodeman.GetMasternodeRank(vinMasternode.prevout, nRank, nBlockHeight - 101, nMinRequiredProtocol)) {
+    if(!mnodeman.GetMasternodeRank(vinMasternode.prevout, nRank, nBlockHeight - 101, nMinRequiredProtocol, true)) {
         LogPrint(BCLog::MNPAYMENTS, "CMasternodePaymentVote::IsValid -- Can't calculate rank for masternode %s\n",
                     vinMasternode.prevout.ToStringShort());
         return false;
@@ -655,7 +655,7 @@ bool CMasternodePayments::ProcessBlock(int nBlockHeight, CConnman& connman)
 
     int nRank;
 
-    if (!mnodeman.GetMasternodeRank(activeMasternode.outpoint, nRank, nBlockHeight - 101, GetMinMasternodePaymentsProto())) {
+    if (!mnodeman.GetMasternodeRank(activeMasternode.outpoint, nRank, nBlockHeight - 101, GetMinMasternodePaymentsProto(), true)) {
         LogPrint(BCLog::MNPAYMENTS, "CMasternodePayments::ProcessBlock -- Unknown Masternode\n");
         return false;
     }
@@ -716,7 +716,7 @@ void CMasternodePayments::CheckPreviousBlockVotes(int nPrevBlockHeight)
     debugStr += strprintf("CMasternodePayments::CheckPreviousBlockVotes -- nPrevBlockHeight=%d, expected voting MNs:\n", nPrevBlockHeight);
 
     CMasternodeMan::rank_pair_vec_t mns;
-    if (!mnodeman.GetMasternodeRanks(mns, nPrevBlockHeight - 101, GetMinMasternodePaymentsProto())) {
+    if (!mnodeman.GetMasternodeRanks(mns, nPrevBlockHeight - 101, GetMinMasternodePaymentsProto(), true)) {
         debugStr += "CMasternodePayments::CheckPreviousBlockVotes -- GetMasternodeRanks failed\n";
         LogPrint(BCLog::MNPAYMENTS, "%s\n", debugStr);
         return;

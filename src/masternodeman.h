@@ -79,7 +79,7 @@ private:
     /// Find an entry
     CMasternode* Find(const COutPoint& outpoint);
 
-    bool GetMasternodeScores(const uint256& nBlockHash, score_pair_vec_t& vecMasternodeScoresRet, int nMinProtocol = 0);
+    bool GetMasternodeScores(const uint256& nBlockHash, score_pair_vec_t& vecMasternodeScoresRet, int nMinProtocol = 0, bool fFilterValidForPayment = false);
 
 public:
     // Keep track of all broadcasts I've seen
@@ -176,8 +176,8 @@ public:
 
     std::map<COutPoint, CMasternode> GetFullMasternodeMap() { return mapMasternodes; }
 
-    bool GetMasternodeRanks(rank_pair_vec_t& vecMasternodeRanksRet, int nBlockHeight = -1, int nMinProtocol = 0);
-    bool GetMasternodeRank(const COutPoint &outpoint, int& nRankRet, int nBlockHeight = -1, int nMinProtocol = 0);
+    bool GetMasternodeRanks(rank_pair_vec_t& vecMasternodeRanksRet, int nBlockHeight = -1, int nMinProtocol = 0, bool fFilterValidForPayment = false);
+    bool GetMasternodeRank(const COutPoint &outpoint, int& nRankRet, int nBlockHeight = -1, int nMinProtocol = 0, bool fFilterValidForPayment = false);
 
     void ProcessMasternodeConnections(CConnman& connman);
     std::pair<CService, std::set<uint256> > PopScheduledMnbRequestConnection();

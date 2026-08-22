@@ -619,7 +619,7 @@ masternode_info_t CMasternodeMan::FindRandomNotInVec(const std::vector<COutPoint
     return masternode_info_t();
 }
 
-bool CMasternodeMan::GetMasternodeScores(const uint256& nBlockHash, CMasternodeMan::score_pair_vec_t& vecMasternodeScoresRet, int nMinProtocol)
+bool CMasternodeMan::GetMasternodeScores(const uint256& nBlockHash, CMasternodeMan::score_pair_vec_t& vecMasternodeScoresRet, int nMinProtocol, bool fFilterValidForPayment)
 {
     vecMasternodeScoresRet.clear();
 
@@ -633,16 +633,19 @@ bool CMasternodeMan::GetMasternodeScores(const uint256& nBlockHash, CMasternodeM
 
     // calculate scores
     for (auto& mnpair : mapMasternodes) {
-        if (mnpair.second.nProtocolVersion >= nMinProtocol) {
-            vecMasternodeScoresRet.push_back(std::make_pair(mnpair.second.CalculateScore(nBlockHash), &mnpair.second));
-        }
+        if (mnpair.second.nProtocolVersion < nMinProtocol) continue;
+        // BUGFIX: without this, masternodes that are NEW_START_REQUIRED/EXPIRED/etc. still
+        // compete for payment-vote ranking slots, diluting the pool of nodes that can actually
+        // cast a payment vote and starving the MNPAYMENTS_SIGNATURES_REQUIRED quorum.
+        if (fFilterValidForPayment && !mnpair.second.IsValidForPayment()) continue;
+        vecMasternodeScoresRet.push_back(std::make_pair(mnpair.second.CalculateScore(nBlockHash), &mnpair.second));
     }
 
     sort(vecMasternodeScoresRet.rbegin(), vecMasternodeScoresRet.rend(), CompareScoreMN());
     return !vecMasternodeScoresRet.empty();
 }
 
-bool CMasternodeMan::GetMasternodeRank(const COutPoint& outpoint, int& nRankRet, int nBlockHeight, int nMinProtocol)
+bool CMasternodeMan::GetMasternodeRank(const COutPoint& outpoint, int& nRankRet, int nBlockHeight, int nMinProtocol, bool fFilterValidForPayment)
 {
     nRankRet = -1;
 
@@ -659,7 +662,7 @@ bool CMasternodeMan::GetMasternodeRank(const COutPoint& outpoint, int& nRankRet,
     LOCK(cs);
 
     score_pair_vec_t vecMasternodeScores;
-    if (!GetMasternodeScores(nBlockHash, vecMasternodeScores, nMinProtocol))
+    if (!GetMasternodeScores(nBlockHash, vecMasternodeScores, nMinProtocol, fFilterValidForPayment))
         return false;
 
     int nRank = 0;
@@ -674,7 +677,7 @@ bool CMasternodeMan::GetMasternodeRank(const COutPoint& outpoint, int& nRankRet,
     return false;
 }
 
-bool CMasternodeMan::GetMasternodeRanks(CMasternodeMan::rank_pair_vec_t& vecMasternodeRanksRet, int nBlockHeight, int nMinProtocol)
+bool CMasternodeMan::GetMasternodeRanks(CMasternodeMan::rank_pair_vec_t& vecMasternodeRanksRet, int nBlockHeight, int nMinProtocol, bool fFilterValidForPayment)
 {
     vecMasternodeRanksRet.clear();
 
@@ -691,7 +694,7 @@ bool CMasternodeMan::GetMasternodeRanks(CMasternodeMan::rank_pair_vec_t& vecMast
     LOCK(cs);
 
     score_pair_vec_t vecMasternodeScores;
-    if (!GetMasternodeScores(nBlockHash, vecMasternodeScores, nMinProtocol))
+    if (!GetMasternodeScores(nBlockHash, vecMasternodeScores, nMinProtocol, fFilterValidForPayment))
         return false;
 
     int nRank = 0;
