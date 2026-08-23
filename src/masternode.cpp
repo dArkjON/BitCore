@@ -819,7 +819,10 @@ bool CMasternodePing::CheckAndUpdate(CMasternode* pmn, bool fFromNewBroadcast, i
         // BTX 2024-10
         // Guard against integer division rounding to 0 when the shortened
         // regtest NewStartRequired window is smaller than the target spacing.
-        int nBlockSlack = std::max(10, GetMasternodeNewStartRequiredSeconds() / (int)Params().GetConsensus().nPowTargetSpacing);
+        // Floor must exceed the fixed tip-12 block reference used in
+        // CMasternodePing::CMasternodePing() above, or every ping on regtest
+        // would be rejected as "too old" by construction.
+        int nBlockSlack = std::max(13, GetMasternodeNewStartRequiredSeconds() / (int)Params().GetConsensus().nPowTargetSpacing);
         if ((*mi).second && (*mi).second->nHeight < chainActive.Height() - nBlockSlack) {
         //if ((*mi).second && (*mi).second->nHeight < chainActive.Height() - 24) {             
             //LogPrintf("CMasternodePing::CheckAndUpdate -- Masternode ping is invalid, block hash is too old: masternode=%s  blockHash=%s\n", vin.prevout.ToStringShort(), blockHash.ToString());

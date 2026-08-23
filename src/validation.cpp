@@ -2277,21 +2277,6 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
         return state.DoS(0, error("ConnectBlock(BTX): couldn't find masternode or superblock payments"),
                                 REJECT_INVALID, "bad-cb-payee");
     }
-
-    // Second (rank-queue) masternode payment system, see SPORK_BTX_22_MASTERNODE_RANK_PAYMENT_SYSTEM.
-    // Only tracked while the spork is active -- record which masternode actually got paid at this
-    // height so nBlockLastPaid2/getmasternoderank_2 reflect it (reorg-undone in DisconnectBlock).
-    if (sporkManager.IsSporkActive(SPORK_BTX_22_MASTERNODE_RANK_PAYMENT_SYSTEM)) {
-        CAmount nMasternodePaymentAmt = GetMasternodePayment(pindex->nHeight, block.vtx[0]->GetValueOut());
-        for (const auto& txout : block.vtx[0]->vout) {
-            if (txout.nValue != nMasternodePaymentAmt) continue;
-            masternode_info_t mnInfo;
-            if (mnodeman.GetMasternodeInfo(txout.scriptPubKey, mnInfo)) {
-                mnRankPayments.RecordPayment(pindex->nHeight, mnInfo.vin.prevout);
-                break;
-            }
-        }
-    }
     // END DASH
 
     if (!control.Wait())
@@ -2319,6 +2304,28 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
 
     int64_t nTime6 = GetTimeMicros(); nTimeCallbacks += nTime6 - nTime5;
     LogPrint(BCLog::BENCH, "    - Callbacks: %.2fms [%.2fs (%.2fms/blk)]\n", MILLI * (nTime6 - nTime5), nTimeCallbacks * MICRO, nTimeCallbacks * MILLI / nBlocksTotal);
+
+    // Second (rank-queue) masternode payment system, see SPORK_BTX_22_MASTERNODE_RANK_PAYMENT_SYSTEM.
+    // Only tracked while the spork is active -- record which masternode actually got paid at this
+    // height so nBlockLastPaid2/getmasternoderank_2 reflect it (reorg-undone in DisconnectBlock).
+    // Placed here deliberately, after fJustCheck's early-return and after WriteUndoDataForBlock
+    // has succeeded: this is the true point of no return for this block, so RecordPayment only
+    // ever fires for blocks that are actually becoming part of the active chain. Placing it earlier
+    // (e.g. right after IsBlockPayeeValid) would also fire on dry-run validity checks (fJustCheck,
+    // used e.g. by block-template testing) and on ConnectBlock attempts that still fail a later
+    // check such as control.Wait() -- both of which never actually connect the block, so any
+    // mutation done there has no corresponding DisconnectBlock to undo it and leaks stale state.
+    if (sporkManager.IsSporkActive(SPORK_BTX_22_MASTERNODE_RANK_PAYMENT_SYSTEM)) {
+        CAmount nMasternodePaymentAmt = GetMasternodePayment(pindex->nHeight, block.vtx[0]->GetValueOut());
+        for (const auto& txout : block.vtx[0]->vout) {
+            if (txout.nValue != nMasternodePaymentAmt) continue;
+            masternode_info_t mnInfo;
+            if (mnodeman.GetMasternodeInfo(txout.scriptPubKey, mnInfo)) {
+                mnRankPayments.RecordPayment(pindex->nHeight, mnInfo.vin.prevout);
+                break;
+            }
+        }
+    }
 
     return true;
 }
