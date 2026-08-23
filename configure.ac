@@ -961,7 +961,13 @@ fi
 
 if test x$use_boost = xyes; then
 
-BOOST_LIBS="$BOOST_LDFLAGS $BOOST_SYSTEM_LIB $BOOST_FILESYSTEM_LIB $BOOST_THREAD_LIB $BOOST_CHRONO_LIB"
+dnl Order matters for static linking: boost_thread and boost_chrono call
+dnl into boost_system (e.g. boost::system::system_category()), so
+dnl boost_system must come after them on the link line, or a single-pass
+dnl static linker (as used for --disable-shared builds) leaves those
+dnl symbols unresolved. Dynamic linking doesn't care about this order,
+dnl so this only matters for static/portable builds.
+BOOST_LIBS="$BOOST_LDFLAGS $BOOST_FILESYSTEM_LIB $BOOST_THREAD_LIB $BOOST_CHRONO_LIB $BOOST_SYSTEM_LIB"
 
 
 dnl If boost (prior to 1.57) was built without c++11, it emulated scoped enums
