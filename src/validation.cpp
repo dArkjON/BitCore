@@ -1737,6 +1737,12 @@ DisconnectResult CChainState::DisconnectBlock(const CBlock& block, const CBlockI
 {
     bool fClean = true;
 
+    // Second (rank-queue) masternode payment system: undo the payment tracking recorded in
+    // ConnectBlock for this height, symmetric with the record there. Safe to call unconditionally
+    // even if nothing was recorded for this height (e.g. spork wasn't active back then) or if the
+    // spork has since been deactivated -- UndoPayment() is a no-op when there's no entry to undo.
+    mnRankPayments.UndoPayment(pindex->nHeight);
+
     CBlockUndo blockUndo;
     if (!UndoReadFromDisk(blockUndo, pindex)) {
         error("DisconnectBlock(): failure reading undo data");
@@ -2270,6 +2276,21 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
         mapRejectedBlocks.insert(make_pair(block.GetHash(), GetTime()));
         return state.DoS(0, error("ConnectBlock(BTX): couldn't find masternode or superblock payments"),
                                 REJECT_INVALID, "bad-cb-payee");
+    }
+
+    // Second (rank-queue) masternode payment system, see SPORK_BTX_22_MASTERNODE_RANK_PAYMENT_SYSTEM.
+    // Only tracked while the spork is active -- record which masternode actually got paid at this
+    // height so nBlockLastPaid2/getmasternoderank_2 reflect it (reorg-undone in DisconnectBlock).
+    if (sporkManager.IsSporkActive(SPORK_BTX_22_MASTERNODE_RANK_PAYMENT_SYSTEM)) {
+        CAmount nMasternodePaymentAmt = GetMasternodePayment(pindex->nHeight, block.vtx[0]->GetValueOut());
+        for (const auto& txout : block.vtx[0]->vout) {
+            if (txout.nValue != nMasternodePaymentAmt) continue;
+            masternode_info_t mnInfo;
+            if (mnodeman.GetMasternodeInfo(txout.scriptPubKey, mnInfo)) {
+                mnRankPayments.RecordPayment(pindex->nHeight, mnInfo.vin.prevout);
+                break;
+            }
+        }
     }
     // END DASH
 

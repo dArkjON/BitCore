@@ -270,6 +270,9 @@ void Shutdown()
     flatdb3.Dump(governance);
     CFlatDB<CNetFulfilledRequestManager> flatdb4("netfulfilled.dat", "magicFulfilledCache");
     flatdb4.Dump(netfulfilledman);
+    // Second (rank-queue) masternode payment system, see SPORK_BTX_22_MASTERNODE_RANK_PAYMENT_SYSTEM
+    CFlatDB<CMasternodeRankPayments> flatdb5("mnrankpayments.dat", "magicMasternodeRankPaymentsCache");
+    flatdb5.Dump(mnRankPayments);
     //
 
     if (fFeeEstimatesInitialized)
@@ -1900,6 +1903,14 @@ bool AppInitMain()
             return InitError(_("Failed to load governance cache from") + "\n" + (pathDB / strDBName).string());
         }
         governance.InitOnLoad();
+
+        // Second (rank-queue) masternode payment system, see SPORK_BTX_22_MASTERNODE_RANK_PAYMENT_SYSTEM
+        strDBName = "mnrankpayments.dat";
+        uiInterface.InitMessage(_("Loading masternode rank payment cache..."));
+        CFlatDB<CMasternodeRankPayments> flatdb5(strDBName, "magicMasternodeRankPaymentsCache");
+        if(!flatdb5.Load(mnRankPayments)) {
+            return InitError(_("Failed to load masternode rank payments cache from") + "\n" + (pathDB / strDBName).string());
+        }
     } else {
         uiInterface.InitMessage(_("Masternode cache is empty, skipping payments and governance cache..."));
     }

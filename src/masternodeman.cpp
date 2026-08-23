@@ -25,7 +25,7 @@
 /** Masternode manager */
 CMasternodeMan mnodeman;
 
-const std::string CMasternodeMan::SERIALIZATION_VERSION_STRING = "CMasternodeMan-Version-7";
+const std::string CMasternodeMan::SERIALIZATION_VERSION_STRING = "CMasternodeMan-Version-8";
 
 struct CompareLastPaidBlock
 {
@@ -574,6 +574,59 @@ bool CMasternodeMan::GetNextMasternodeInQueueForPayment(int nBlockHeight, bool f
         mnInfoRet = pBestMasternode->GetInfo();
     }
     return mnInfoRet.fInfoValid;
+}
+
+bool CMasternodeMan::GetRankQueue_2(int nBlockHeight, std::vector<CMasternode*>& vecOut)
+{
+    vecOut.clear();
+
+    // Need LOCK2 here to ensure consistent locking order because GetUTXOConfirmations below locks cs_main
+    LOCK2(cs_main, cs);
+
+    int nMnCount = CountMasternodes();
+
+    for (auto& mnpair : mapMasternodes) {
+        CMasternode& mn = mnpair.second;
+        if (!mn.IsValidForPayment()) continue;
+        if (mn.nProtocolVersion < mnpayments.GetMinMasternodePaymentsProto()) continue;
+        // same UTXO-maturity guard as the original (vote-based) payment queue
+        if (GetUTXOConfirmations(mnpair.first) < nMnCount) continue;
+        vecOut.push_back(&mn);
+    }
+
+    if (vecOut.empty()) return false;
+
+    std::sort(vecOut.begin(), vecOut.end(),
+        [](const CMasternode* a, const CMasternode* b) {
+            int ah = a->GetLastPaidBlock2() != 0 ? a->GetLastPaidBlock2() : a->nRankRegisteredHeight;
+            int bh = b->GetLastPaidBlock2() != 0 ? b->GetLastPaidBlock2() : b->nRankRegisteredHeight;
+            if (ah != bh) return ah < bh;
+            return a->vin.prevout < b->vin.prevout;
+        });
+
+    return true;
+}
+
+bool CMasternodeMan::GetNextMasternodeInQueueForPayment_2(int nBlockHeight, int& nCountRet, masternode_info_t& mnInfoRet)
+{
+    mnInfoRet = masternode_info_t();
+    nCountRet = 0;
+
+    std::vector<CMasternode*> vecQueue;
+    if (!GetRankQueue_2(nBlockHeight, vecQueue)) return false;
+
+    nCountRet = (int)vecQueue.size();
+    mnInfoRet = vecQueue.front()->GetInfo();
+    return mnInfoRet.fInfoValid;
+}
+
+bool CMasternodeMan::SetMasternodeLastPaidBlock2(const COutPoint& outpoint, int nHeight)
+{
+    LOCK(cs);
+    CMasternode* pmn = Find(outpoint);
+    if (!pmn) return false;
+    pmn->SetLastPaidBlock2(nHeight);
+    return true;
 }
 
 masternode_info_t CMasternodeMan::FindRandomNotInVec(const std::vector<COutPoint> &vecToExclude, int nProtocolVersion)
@@ -1389,7 +1442,7 @@ bool CMasternodeMan::CheckMnbAndUpdateMasternodeList(CNode* pfrom, CMasternodeBr
         if(mapSeenMasternodeBroadcast.count(hash) && !mnb.fRecovery) { //seen
             LogPrint(BCLog::MASTERNODE, "CMasternodeMan::CheckMnbAndUpdateMasternodeList -- masternode=%s seen\n", mnb.vin.prevout.ToStringShort());
             // less then 2 pings left before this MN goes into non-recoverable state, bump sync timeout
-            if(GetTime() - mapSeenMasternodeBroadcast[hash].first > MASTERNODE_NEW_START_REQUIRED_SECONDS - MASTERNODE_MIN_MNP_SECONDS * 2) {
+            if(GetTime() - mapSeenMasternodeBroadcast[hash].first > GetMasternodeNewStartRequiredSeconds() - GetMasternodeMinMnpSeconds() * 2) {
                 LogPrint(BCLog::MASTERNODE, "CMasternodeMan::CheckMnbAndUpdateMasternodeList -- masternode=%s seen update\n", mnb.vin.prevout.ToStringShort());
                 mapSeenMasternodeBroadcast[hash].first = GetTime();
                 masternodeSync.BumpAssetLastTime("CMasternodeMan::CheckMnbAndUpdateMasternodeList - seen");

@@ -171,6 +171,17 @@ public:
     /// Same as above but use current block height
     bool GetNextMasternodeInQueueForPayment(bool fFilterSigTime, int& nCountRet, masternode_info_t& mnInfoRet);
 
+    /// Second (rank-queue) masternode payment system, see SPORK_BTX_22_MASTERNODE_RANK_PAYMENT_SYSTEM.
+    /// Builds the full, deterministically-sorted eligible-masternode queue (ascending by
+    /// nBlockLastPaid2, never-paid masternodes ordered by nRankRegisteredHeight, outpoint as
+    /// final tie-break). Used both by production payee selection and by the getmasternoderank_2
+    /// debug RPC, so both share the exact same algorithm.
+    bool GetRankQueue_2(int nBlockHeight, std::vector<CMasternode*>& vecOut);
+    /// Find the masternode next to be paid under the second (rank-queue) payment system.
+    bool GetNextMasternodeInQueueForPayment_2(int nBlockHeight, int& nCountRet, masternode_info_t& mnInfoRet);
+    /// Set a masternode's nBlockLastPaid2 (used by CMasternodeRankPayments on connect/disconnect).
+    bool SetMasternodeLastPaidBlock2(const COutPoint& outpoint, int nHeight);
+
     /// Find a random entry
     masternode_info_t FindRandomNotInVec(const std::vector<COutPoint> &vecToExclude, int nProtocolVersion = -1);
 
