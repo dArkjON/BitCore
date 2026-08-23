@@ -258,6 +258,11 @@ public:
     // Undo the payment recorded at height `nHeight`: restore the affected
     // masternode's nBlockLastPaid2 to its previous value (0 if none).
     void UndoPayment(int nHeight);
+    // Most recent recorded payment height for `outpoint` still within the
+    // (pruned) history, or 0 if none is present. Used to restore a
+    // re-registering masternode's place in the rank-queue FIFO instead of
+    // treating it as never-paid.
+    int GetLastPaidHeight(const COutPoint& outpoint) const;
     // Drop history entries older than nTipHeight - MNRANKPAYMENTS_UNDO_DEPTH.
     void Prune(int nTipHeight);
     void Clear() { LOCK(cs_rankpayments); mapRankBlockPayee.clear(); }

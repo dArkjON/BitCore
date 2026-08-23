@@ -1079,6 +1079,18 @@ void CMasternodeRankPayments::UndoPayment(int nHeight)
     mnodeman.SetMasternodeLastPaidBlock2(outpoint, nPrevHeight);
 }
 
+int CMasternodeRankPayments::GetLastPaidHeight(const COutPoint& outpoint) const
+{
+    LOCK(cs_rankpayments);
+    int nHeightRet = 0;
+    for (const auto& entry : mapRankBlockPayee) {
+        if (entry.second == outpoint && entry.first > nHeightRet) {
+            nHeightRet = entry.first;
+        }
+    }
+    return nHeightRet;
+}
+
 void CMasternodeRankPayments::Prune(int nTipHeight)
 {
     LOCK(cs_rankpayments);

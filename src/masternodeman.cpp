@@ -1496,6 +1496,16 @@ bool CMasternodeMan::CheckMnbAndUpdateMasternodeList(CNode* pfrom, CMasternodeBr
 
     if(mnb.CheckOutpoint(nDos)) {
         Add(mnb);
+        // This outpoint may have been paid before under the rank-queue system and later
+        // pruned from mapMasternodes (e.g. MASTERNODE_NEW_START_REQUIRED); mnRankPayments'
+        // history is chain-derived and consensus-safe, so restore its last-paid height if
+        // still within the pruning window instead of leaving nBlockLastPaid2 at 0 -- otherwise
+        // it falls back to nRankRegisteredHeight (its original, much older collateral
+        // confirmation height) and jumps to the front of the queue instead of the back.
+        int nLastPaidHeight = mnRankPayments.GetLastPaidHeight(mnb.vin.prevout);
+        if (nLastPaidHeight > 0) {
+            SetMasternodeLastPaidBlock2(mnb.vin.prevout, nLastPaidHeight);
+        }
         masternodeSync.BumpAssetLastTime("CMasternodeMan::CheckMnbAndUpdateMasternodeList - new");
         // if it matches our Masternode privkey...
         if(fMasterNode && mnb.pubKeyMasternode == activeMasternode.pubKeyMasternode) {
